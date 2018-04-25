@@ -5,6 +5,7 @@ import re
 import cmudict
 import random
 import pronouncing
+import matplotlib.pyplot as plt
 
 class LyricsData:
 
@@ -46,8 +47,8 @@ class LyricsData:
 					countDict[word] = 1
 					i += 1
 
-		self.wordCount = [(j,countDict[j]) for j in countDict]
-		self.wordCount.sort(key=lambda x: x[1])
+		self.wordCountDictionary = [(j,countDict[j]) for j in countDict]
+		self.wordCountDictionary.sort(key=lambda x: x[1])
 		self.wordList = list(countDict.keys())
 		self.numUniqueWords = i
 		# print("Num of words: %d\n" % i)
