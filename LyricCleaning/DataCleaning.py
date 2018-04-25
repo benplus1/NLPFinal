@@ -5,7 +5,6 @@ import re
 import cmudict
 import random
 import pronouncing
-# import markovify
 
 class LyricsData:
 
@@ -83,25 +82,33 @@ class LyricsData:
 		return currGreatestMatches
 
 
+	# def findRhymingWord(self, inputWord):
+	# 	currList = {}
+	# 	maxWords = self.numUniqueWords
+	# 	randomNums = [(random.randrange(0, maxWords)) for i in range(0, maxWords)]
+
+	# 	mostSharedPhones = 0
+	# 	wordWithMostSharedPhones = ""
+	# 	for i in range(0,maxWords):
+	# 		currWord = self.wordList[randomNums[i]]
+
+	# 		if self.numberOfSharedPhones(inputWord, currWord) >= mostSharedPhones:
+	# 			# print("Word with most: %s %d" % (currWord, mostSharedPhones))
+	# 			wordWithMostSharedPhones = currWord
+	# 			mostSharedPhones = self.numberOfSharedPhones(inputWord, currWord)
+
+	# 	print("Most shared phones: %d for word: %s" % (mostSharedPhones, wordWithMostSharedPhones))
+	# 	print("%s %s" % (wordWithMostSharedPhones,self.rhymingDict[wordWithMostSharedPhones]))
+	# 	print("%s %s" % (inputWord, self.rhymingDict[inputWord]))
+	# 	print("num shared: %d" % self.numberOfSharedPhones(inputWord, wordWithMostSharedPhones))
+
 	def findRhymingWord(self, inputWord):
-		currList = {}
-		maxWords = self.numUniqueWords
-		randomNums = [(random.randrange(0, maxWords)) for i in range(0, maxWords)]
-
-		mostSharedPhones = 0
-		wordWithMostSharedPhones = ""
-		for i in range(0,maxWords):
-			currWord = self.wordList[randomNums[i]]
-
-			if self.numberOfSharedPhones(inputWord, currWord) >= mostSharedPhones:
-				# print("Word with most: %s %d" % (currWord, mostSharedPhones))
-				wordWithMostSharedPhones = currWord
-				mostSharedPhones = self.numberOfSharedPhones(inputWord, currWord)
-
-		print("Most shared phones: %d for word: %s" % (mostSharedPhones, wordWithMostSharedPhones))
-		print("%s %s" % (wordWithMostSharedPhones,self.rhymingDict[wordWithMostSharedPhones]))
-		print("%s %s" % (inputWord, self.rhymingDict[inputWord]))
-		print("num shared: %d" % self.numberOfSharedPhones(inputWord, wordWithMostSharedPhones))
+		rhymingWords = pronouncing.rhymes(inputWord)
+		maxWords = min(5, len(rhymingWords))
+		if(maxWords = 0):
+			return "hello"
+		randomNum = (random.randrange(0,maxWords))
+		return rhymingWords[randomNum]
 
 	def markovModel():
 		print()
@@ -123,7 +130,9 @@ class LyricsData:
 
 				
 rapLyrics = LyricsData()
-rapLyrics.cleanLyrics()
-rapLyrics.countUniqueWords()
+# rapLyrics.cleanLyrics()
+# rapLyrics.countUniqueWords()
+print(rapLyrics.findRhymingWord("hello"))
+
 # print(pronouncing.rhymes("hello"))
 # rapLyrics.findRhymingWord()
