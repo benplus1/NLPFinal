@@ -48,10 +48,36 @@ class LyricsData:
 					i += 1
 
 		self.wordCountDictionary = [(j,countDict[j]) for j in countDict]
-		self.wordCountDictionary.sort(key=lambda x: x[1])
+		self.wordCountDictionary.sort(key=lambda x: x[1], reverse=True)
+		self.occurenceDictionary = countDict
+		j = 0
+		self.trainingDict = []
+		for x in self.wordCountDictionary:
+			if x[1] <= 30:
+				self.trainingDict.append(x[0])
+		# print("Num of 1s: %d" % j)
+		# print("len of list: %d" % len(self.wordCountDictionary))
+		# print(self.wordCountDictionary)
+		# self.wordCountDictionary = countDict
 		self.wordList = list(countDict.keys())
 		self.numUniqueWords = i
 		# print("Num of words: %d\n" % i)
+
+	def plotUniqueWords(self, orientation="v"):
+
+		if orientation == "h":
+			values = reversed([x[1] for x in self.wordCountDictionary[:40]])
+			keys = reversed([str(x[0]) for x in self.wordCountDictionary[:40]])
+			plt.barh(range(40), list(values))
+			plt.yticks(range(40), list(keys))
+			plt.show()
+		else:
+			values = ([x[1] for x in self.wordCountDictionary[:40]])
+			keys = ([str(x[0]) for x in self.wordCountDictionary[:40]])
+			plt.bar(range(40), list(values))
+			plt.xticks(range(40), list(keys))
+			plt.show()
+
 
 	def numberOfSharedPhones(self, inputWord, randomWord):
 		if len(self.rhymingDict[inputWord]) == 0 or len(self.rhymingDict[randomWord]) == 0:
@@ -106,7 +132,7 @@ class LyricsData:
 	def findRhymingWord(self, inputWord):
 		rhymingWords = pronouncing.rhymes(inputWord)
 		maxWords = min(5, len(rhymingWords))
-		if(maxWords = 0):
+		if(maxWords == 0):
 			return "hello"
 		randomNum = (random.randrange(0,maxWords))
 		return rhymingWords[randomNum]
@@ -121,4 +147,5 @@ class LyricsData:
 rapLyrics = LyricsData()
 rapLyrics.cleanLyrics()
 rapLyrics.countUniqueWords()
-print(rapLyrics.findRhymingWord("hello"))
+# rapLyrics.plotUniqueWords(orientation='v')
+print("Done")
