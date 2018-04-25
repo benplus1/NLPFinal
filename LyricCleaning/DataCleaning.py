@@ -6,6 +6,8 @@ import cmudict
 import random
 import pronouncing
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import normalize
+
 
 class LyricsData:
 
@@ -24,16 +26,17 @@ class LyricsData:
 		for song in self.actualFile["lyrics"]:
 			for line in song.split('\n'):
 				if (not self.removePunct.search(line)) and (len(line) < 80) and (len(line) > 20):
-					line = line.lower().strip("!@#$%^&*()_+-={}[];:\,.<>/\?")
+					#line = line.lower().strip("!@#$%^&*()_+-={}[];:\,.<>/\?")
+					line = re.sub(r'[^a-zA-Z0-9_\']', '', line.lower())
 					self.cleanedLyrics.append(line)
 
 	def exportLyrics(self):
-		out = csv.writer(open("cleanedLyrics.csv","w"), delimiter=',')
+		out = csv.writer(open("cleanedLyrics2.csv","w", encoding='utf-8'), delimiter=',')
 		out.writerow(self.cleanedLyrics)
 
 	def getLyrics(self):
 		# print("inside")
-		testFile = pd.read_csv("cleanedLyrics.csv", engine='python', header=None)
+		testFile = pd.read_csv("cleanedLyrics2.csv", engine='python', header=None)
 		# print(testFile)
 
 	def countUniqueWords(self):
@@ -142,8 +145,25 @@ class LyricsData:
 		# print(len(self.keysInDict))
 
 
+class HMM:
+	def __init__(self, rapLyrics, fileName="cleanedLyrics2.csv"):
+		self.probs = np.array((rapLyrics.numUniqueWords, rapLyrics.numUniqueWords))
+		self.words = rapLyrics.wordsList
+		f = open(fileName, "r+")
+		for line in f:
+			arr = line.split()
+			for i in range(1, len(arr)):
+				indexCurr = self.words.index(arr[i]) if arr[i] in self.words else None
+				indexPrev = self.words.index(arr[i-1]) if arr[i-1] in self.words else None
+				if (indexCurr!=None and indexPrev!= None):
+					self.probs[indexCurr, indexPrev] += 1
+		self.normprobs = normalize(self.probs, axis=1, norm='l1')
 
-				
+	def exportHMM(self):
+		np.savetxt('normprobs.txt', self.normprobs, fmt='%1.3f')
+		np.savetxt('probs.txt', self.probs, fmt='%1.3f')
+
+
 rapLyrics = LyricsData()
 rapLyrics.cleanLyrics()
 rapLyrics.countUniqueWords()
