@@ -31,6 +31,7 @@ def my_form():
 
 @app.route('/', methods=['POST'])
 def my_form_post():
+    seenWords = []
     text = request.form['text']
     text = re.sub(r'[^a-zA-Z0-9_\'\s]', '', text.lower())
     arr = text.split()
@@ -50,7 +51,11 @@ def my_form_post():
         print(normprobs[currIndex])
         max = np.argmax(normprobs[currIndex])
         nextword = wordList[max]
+        while (((len(nextword) == 1) and (nextword != 'a' or nextword != 'i')) or (nextword in seenWords)):
+            currIndex = random.randint(1, 25734)
+            max = np.argmax(normprobs[currIndex])
+            nextword = wordList[max]
+        seenWords.append(nextword)
         currWord = nextword
         returnThis = nextword + returnThis
-
     return returnThis
